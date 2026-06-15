@@ -31,6 +31,24 @@ det eneste som teller som dokumentert resultat.
 - Bugfikser i motoren er tillatt, men dokumenteres med før/etter-kjøring mot
   baseline. Re-tuning på historiske data er ikke tillatt.
 
+## 2.1 Rangering og uavgjort (tiebreak)
+
+Modellen rangerer kandidatene etter modellscore (0–100). Når to eller flere
+aksjer har **samme modellscore** ved seleksjonsgrensen, avgjøres rekkefølgen av
+**normalisert relativ styrke (Normalized RS) — høyest først**. Gjenstående
+uavgjort (lik score *og* lik Normalized RS) faller tilbake på en stabil,
+reproduserbar rekkefølge.
+
+Regelen er deklarert 2026-06-15 og gjelder **kun live-seleksjon fra og med
+juli 2026-loggen**. Den er ikke anvendt med tilbakevirkende kraft — verken på
+juni 2026-loggen (der alle fem hadde score 95; rekkefølgen er dokumentert i
+`2026-06/NOTAT.md`) eller på den frosne backtest-baselinen
+(`PARAMETERS_FROZEN.md`), som beholder sin opprinnelige rangering. Formålet er
+en fullt spesifisert, etterprøvbar seleksjon — **ikke** en forventet
+avkastningsforbedring: Normalized RS har svak prediktiv kraft på 12-måneders
+sikt, men er den faktoren modellen allerede vekter høyest, og er derfor et
+prinsipielt og dokumenterbart valg av tiebreak.
+
 ## 3. Kanonisk portefølje
 
 Det finnes **én** offisiell modellportefølje.
@@ -125,3 +143,4 @@ som forventet avkastning.
 | 2026-06-12 | Seksjon 8 revidert (før publisering): utvikleren eier per i dag ingen aksjer, men har til hensikt å speile modellporteføljen med egne midler fra juli 2026. Erstatter formuleringen fra tidligere samme dag. |
 | 2026-06-12 | Seksjon 8 presisert (før publisering): egne midler investeres i en egen privat portefølje etter samme strategi, med egen startdato (planlagt 12.07.2026) og egen årlig rebalansering per juli — ikke en speiling av den kanoniske porteføljen. Kjøp skjer alltid etter at månedsloggen er committet. |
 | 2026-06-15 | Publisert som `ArcticSignals/arcticquant-sporrekke` sammen med juni 2026-loggen. (Et tidligere utkast var feilaktig stemplet «publisert 2026-06-12»; rettet til faktisk publiseringsdato før første offentlige commit.) Fra og med dette tidspunktet gjelder append-only-reglene fullt ut. |
+| 2026-06-15 | Ny §2.1: deklarert tiebreak for live-seleksjon — ved lik modellscore rangeres høyest Normalized RS først. Gjelder kun fremover (første gang juli 2026-loggen); ikke anvendt på juni-loggen eller den frosne backtest-baselinen. Implementert i live-skanneren; backtest-motoren bevisst urørt. |
