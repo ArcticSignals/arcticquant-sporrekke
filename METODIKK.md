@@ -49,6 +49,41 @@ avkastningsforbedring: Normalized RS har svak prediktiv kraft på 12-måneders
 sikt, men er den faktoren modellen allerede vekter høyest, og er derfor et
 prinsipielt og dokumenterbart valg av tiebreak.
 
+## 2.2 Seleksjonsunivers
+
+Modellen rangerer aksjer innenfor et definert univers. **Fra og med juli
+2026-loggen** utvides universet fra en kuratert liste (164 håndplukkede
+`.OL`-tickere) til **hele Oslo Børs**: samtlige OSEAX-aksjer pluss
+OSEEX-egenkapitalbevis (199 tickere per 2026-06-19,
+`data/oslo_universe_full.csv`), filtrert med de **samme** objektive
+seleksjonsreglene (`analysis/universe_filter.py`: minstekurs, minste
+gjennomsnittsvolum, tilstrekkelig historikk for MA200, RSI-tak).
+
+Begrunnelse: den kuraterte listen bar en skjult seleksjonsbias (hvem valgte de
+164?). Å skanne hele børsen og la objektive likviditets-/kvalitetsfiltre avgjøre
+er et sterkere og mer etterprøvbart utgangspunkt.
+
+Forbehold:
+
+- Endringen gjelder **kun fremover** og anvendes ikke med tilbakevirkende kraft
+  — verken på den kanoniske porteføljen (seksjon 3, etablert juni 2026 fra den
+  kuraterte listen) eller på tidligere logger. Den kanoniske porteføljen
+  selekteres på nytt fra det utvidede universet først ved neste årlige
+  rebalansering (juni 2027).
+- Den frosne backtest-baselinen fra 12.06.2026 (kuratert univers, +512.5 %,
+  stempel `38ae8be77267`) er dokumentert historikk og endres ikke. En **ny,
+  separat** baseline på det fulle universet (+378.4 %, stempel `f1e266c0ef3d`,
+  `results/baseline_2026-07-01/`) er arkivert som referanse for den nye
+  metodikken. Den lavere avkastningen er tilsiktet: hele gapet ligger i
+  konsentrerte BULL-år, konsistent med at den kuraterte meravkastningen delvis
+  var hindsight/seleksjonsbias.
+- Universet dekker fortsatt kun **nåværende** noterte selskaper og fjerner ikke
+  survivorship bias fullstendig (delistede/konkursramte navn mangler). Punktvis
+  rekonstruksjon er et separat, senere arbeid.
+- En eventuell «vis alle»-funksjon i grensesnittet er rent visuell og endrer
+  aldri hvilke aksjer modellen offisielt rangerer eller velger; seleksjonen er
+  alltid det filtrerte settet.
+
 ## 3. Kanonisk portefølje
 
 Det finnes **én** offisiell modellportefølje.
@@ -144,3 +179,4 @@ som forventet avkastning.
 | 2026-06-12 | Seksjon 8 presisert (før publisering): egne midler investeres i en egen privat portefølje etter samme strategi, med egen startdato (planlagt 12.07.2026) og egen årlig rebalansering per juli — ikke en speiling av den kanoniske porteføljen. Kjøp skjer alltid etter at månedsloggen er committet. |
 | 2026-06-15 | Publisert som `ArcticSignals/arcticquant-sporrekke` sammen med juni 2026-loggen. (Et tidligere utkast var feilaktig stemplet «publisert 2026-06-12»; rettet til faktisk publiseringsdato før første offentlige commit.) Fra og med dette tidspunktet gjelder append-only-reglene fullt ut. |
 | 2026-06-15 | Ny §2.1: deklarert tiebreak for live-seleksjon — ved lik modellscore rangeres høyest Normalized RS først. Gjelder kun fremover (første gang juli 2026-loggen); ikke anvendt på juni-loggen eller den frosne backtest-baselinen. Implementert i live-skanneren; backtest-motoren bevisst urørt. |
+| 2026-07-01 | Ny §2.2: seleksjonsuniverset utvides fra den kuraterte 164-listen til hele Oslo Børs (OSEAX + OSEEX, 199 tickere) filtrert med samme objektive regler. Gjelder kun fremover (fra juli 2026-loggen; kanonisk portefølje reselekteres først ved rebalansering juni 2027). Ny separat baseline arkivert (`results/baseline_2026-07-01/`, +378.4 %); frossen kuratert baseline uendret. |
